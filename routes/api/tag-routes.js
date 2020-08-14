@@ -10,12 +10,12 @@ router.get('/', (req, res) => {
   // FIXME: products aren't showing up
   Tag.findAll(
     { 
-      include: [{
-        model: Product,
-          attributes: ['product_name'],
+      include: [
+        {
+          model: Product,
           through: ProductTag,
-          as: 'products'
-        }]
+        },
+      ]
     }
     ).then(result => res.json(result));
 });
@@ -28,7 +28,10 @@ router.get('/:id', (req, res) => {
       id: req.params.id
     },
     include: [
-      { model: Product, as: 'products' }
+      {
+        model: Product,
+        through: ProductTag,
+      },
     ]
   }).then(result => res.json(result));
 });
