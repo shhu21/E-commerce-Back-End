@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
   
-  // FIXME: tags aren't showing up
   Product.findAll({
     include: [
       { model: Category },
@@ -17,7 +16,12 @@ router.get('/', (req, res) => {
         through: ProductTag
       }
     ]
-  }).then(result => res.json(result));
+  })
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 // get one product
@@ -35,7 +39,12 @@ router.get('/:id', (req, res) => {
         through: ProductTag,
       },
     ]
-  }).then(result => res.json(result));
+  })
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 // create new product
@@ -112,14 +121,20 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// FIXME
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete one product by its `id` value
-  Product.destroy({
+  await ProductTag.destroy({
+    where: {
+      product_id: req.params.id
+    }
+  });
+
+  const result = await Product.destroy({
     where: {
       id: req.params.id
     }
-  }).then(result => res.json(result));
+  })
+  return res.json(result);
 });
 
 module.exports = router;

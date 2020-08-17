@@ -7,7 +7,6 @@ router.get('/', (req, res) => {
   // find all tags
   // be sure to include its associated Product data
 
-  // FIXME: products aren't showing up
   Tag.findAll(
     { 
       include: [
@@ -16,8 +15,12 @@ router.get('/', (req, res) => {
           through: ProductTag,
         },
       ]
-    }
-    ).then(result => res.json(result));
+    })
+    .then(result => res.json(result))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 router.get('/:id', (req, res) => {
@@ -33,13 +36,22 @@ router.get('/:id', (req, res) => {
         through: ProductTag,
       },
     ]
-  }).then(result => res.json(result));
+  })
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 router.post('/', (req, res) => {
   // create a new tag
   Tag.create(req.body)
-  .then(result => res.json(result));
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 router.put('/:id', (req, res) => {
@@ -49,7 +61,11 @@ router.put('/:id', (req, res) => {
       id: req.params.id
     }
   })
-  .then(result => res.json(result));
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 router.delete('/:id', (req, res) => {
@@ -58,7 +74,12 @@ router.delete('/:id', (req, res) => {
     where: {
       id: req.params.id
     }
-  }).then(result => res.json(result));
+  })
+  .then(result => res.json(result))
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
